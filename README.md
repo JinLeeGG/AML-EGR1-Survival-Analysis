@@ -1,4 +1,4 @@
-# Analysis of EGR1 Gene Expression and Survival in Acute Myeloid Leukemia (AML) Patients, and Building a Machine Learning Model 
+# Analysis of EGR1 Gene Expression and Survival in Acute Myeloid Leukemia (AML) Patients, and Building a Predictive Machine Learning Model 
 
 ## Project Overview
 
