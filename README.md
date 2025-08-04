@@ -1,8 +1,8 @@
-# Analysis of EGR1 Gene Expression and Survival in Acute Myeloid Leukemia (AML) Patients, and Predictive Modeling
+# Analysis of EGR1 Gene Expression and Survival in Acute Myeloid Leukemia (AML) Patients, and Building a Machine Learning Model 
 
 ## Project Overview
 
-The goal of this project is to **analyze the statistical association between the expression level of the EGR1 (Early Growth Response 1) gene and the survival outcomes of patients with Acute Myeloid Leukemia (AML)**, using data from the AML database of the Human Cancer Genome Atlas (TCGA - LAML). Furthermore, to develop a machine learning model that predicts patient survival status based on RNA expression data.
+The goal of this project is to **analyze the statistical association between the expression level of the EGR1 (Early Growth Response 1) gene and the survival outcomes of patients with Acute Myeloid Leukemia (AML)**, using data from the AML database of the Human Cancer Genome Atlas (TCGA - LAML). Additionally, the project will involve the development of a machine learning model that predicts patient survival status based on RNA expression data.
 
 The project is structured into three main stages:
 
