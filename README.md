@@ -1,100 +1,95 @@
-# Survival Prediction Model for AML using Gene Expression Data from TCGA
+# Analysis of EGR1 Gene Expression and Survival in Acute Myeloid Leukemia (AML) Patients, and Predictive Modeling
 
-## 1\. Overview
+## Project Overview
 
-This project analyzes the relationship between the expression levels of specific genes and patient survival outcomes in Acute Myeloid Leukemia (AML). The analysis utilizes data from The Cancer Genome Atlas (TCGA-LAML) cohort.
+The goal of this project is to **analyze the statistical association between the expression level of the EGR1 (Early Growth Response 1) gene and the survival outcomes of patients with Acute Myeloid Leukemia (AML)**, using data from the AML database of the Human Cancer Genome Atlas (TCGA - LAML). Furthermore, to develop a machine learning model that predicts patient survival status based on RNA expression data.
 
-The primary goal is to identify significant prognostic biomarkers through survival analysis and to build a machine learning model that predicts patient survival status based on gene expression data.
+The project is structured into three main stages:
 
-## 2\. Key Features
+1.  **Data Preprocessing and Analysis**: Cleaning and integrating clinical and RNA-seq data into a format suitable for analysis.
+2.  **Survival Analysis**: Statistically verifying the impact of EGR1, MAFB gene expression levels on patient survival duration using Kaplan-Meier analysis and the log-rank test.
+3.  **Machine Learning Modeling**: Building and evaluating a classification model to predict patient survival status (Alive/Deceased) using gene expression data as features.
 
-  - **Data Preprocessing:** Cleans and merges RNA-seq expression data and clinical data downloaded from cBioPortal, aligning them by patient ID.
-  - **Survival Analysis:**
-      - Stratifies patients into groups (e.g., High vs. Low expression) based on the expression levels of specific genes (`EGR1`, `MAFB`, etc.).
-      - Visualizes survival differences between groups using Kaplan-Meier curves.
-      - Validates the statistical significance of these differences using the log-rank test.
-  - **Machine Learning Modeling:**
-      - Develops and trains Logistic Regression and Random Forest models to predict patient survival status (Deceased/Living).
-      - Evaluates model performance using metrics such as Accuracy, Precision, and Recall.
-      - Identifies the most influential genes for survival prediction using the Random Forest's feature importance scores.
+## Hypothesis
 
-## 3\. Data Source
+In a cohort of patients with Acute Myeloid Leukemia (AML), differences in EGR1 gene expression levels will be correlated with statistically significant differences in survival outcomes. 
 
-  - **Platform:** [cBioPortal for Cancer Genomics](https://www.cbioportal.org/)
-  - **Study Dataset:** `Acute Myeloid Leukemia (TCGA, PanCancer Atlas)`
-  - **Required Files:**
-    1.  `Clinical Data`
-    2.  `mRNA Expression (RNA-seq RSEM)`
+## Dataset
 
-## 4\. Installation
+  - **Data Source**: [The Cancer Genome Atlas (TCGA-LAML, PanCancer Atlas)](https://gdc.cancer.gov/about-data/publications/laml_2012)
+  - **Sample Size**: 200 patients with Acute Myeloid Leukemia (AML)
+  - **Data Types**:
+      - Patient Clinical Data
+      - RNA-seq Gene Expression Data (RNAseq GAF 2.0 read count)
 
-### A. Prerequisites
 
-  - Python 3.8 or higher
+## Project Pipeline
 
-### B. Installing Dependencies
+### 1\. Data Analysis and Preprocessing (`1_Data_Analysis_Preprocessing.ipynb`)
 
-You can install all required libraries at once using the following command:
+  - **Clinical Data Processing**:
 
-```bash
-pip install pandas numpy matplotlib seaborn scikit-learn lifelines
-```
+      - Extracted key information for analysis: `bcr_patient_barcode` (patient ID), `vital_status`, `days_to_death`, and `days_to_last_followup`.
+      - Created a derived feature, `Observation Period`, representing the total observation time by using `days_to_death` for deceased patients and `days_to_last_followup` for living patients.
+      - Converted `vital_status` into a binary `Status` variable (Deceased: 1, Alive: 0) for survival analysis.
 
-Alternatively, create a `requirements.txt` file in the project directory with the content below.
+  - **RNA Expression Data Processing**:
 
-**requirements.txt**
+      - Removed 123 genes with missing information ('?') from the initial 20,442 genes.
+      - Cleaned the `GeneID` format to `{gene_name}|{id}` for ease of analysis.
+      - Transposed the data matrix so that each row represents a patient and each column represents a gene's expression level.
 
-```
-pandas
-numpy
-matplotlib
-seaborn
-scikit-learn
-lifelines
-jupyterlab
-```
+  - **Data Integration**:
 
-Then run the following command to install them:
+      - Merged the cleaned clinical and RNA expression data on the patient ID (`bcr_patient_barcode`) to create the final analytical dataset (`merged_df.csv`).
 
-```bash
-pip install -r requirements.txt
-```
+### 2\. Survival Analysis (`2_Survival_Analysis_of_EGR1_Expression_in_Patients_with_Acute_Myeloid_Leukemia.ipynb`)
 
-## 5\. Usage
+  - **Kaplan-Meier Survival Analysis**:
 
-1.  **Download Data**
+      - Stratified patients into two groups based on the expression levels of `EGR1` and `MAFB` genes: the top 20% (High Expression) and the bottom 20% (Low Expression).
+      - Visualized and compared the survival probabilities over time between the two groups.
 
-      - Download the two required files listed in the "Data Source" section.
-      - Place them inside a `data/` directory within the project folder. (Create the directory if it doesn't exist).
+  - **Log-rank Test**:
 
-2.  **Launch Jupyter Notebook**
+      - Statistically tested whether the difference between the survival curves of the two groups was significant, using the p-value.
 
-      - Open your terminal and run the following command to start Jupyter Lab:
+### 3\. Machine Learning Modeling (`3_Machine_Learning_Modeling.ipynb`)
 
-    <!-- end list -->
+  - **Feature and Target Definition**:
 
-    ```bash
-    jupyter lab
-    ```
+      - **Features (X)**: 20,319 gene expression data points.
+      - **Target (y)**: `Status` (patient's survival status).
 
-3.  **Run the Analysis**
+  - **Model Training and Evaluation**:
 
-      - Open the `AML_Survival_Analysis.ipynb` notebook (or your custom notebook file).
-      - Execute the cells sequentially to perform the data preprocessing, analysis, and modeling.
+      - **Attempt 1**: Evaluated the performance of Logistic Regression and Random Forest models using all gene expression data as features.
+      - **Attempt 2 (Feature Selection)**: Used the results from the log-rank test to select 2,825 significant genes (p-value ≤ 0.05) as features. Re-evaluated the models to determine if performance improved.
 
-## 6\. Key Results
 
-  - **Survival Analysis:** A statistically significant difference in survival was observed between the high and low `EGR1` expression groups (log-rank test p-value \< 0.05). The high-expression group was associated with a better survival prognosis.
-  - **Machine Learning Prediction:**
-      - **(Example)** The Random Forest model achieved approximately 78% accuracy in predicting survival status, outperforming the Logistic Regression model (approx. 71%).
-      - **(Example)** Feature importance analysis revealed that `EGR1` was a more significant predictor of survival than `MAFB` in the model.
+## Key Findings
 
-## 7\. Technologies Used
+### Survival Analysis Results
 
-  - **Language:** Python
-  - **Libraries:**
-      - **Data Handling:** Pandas, NumPy
-      - **Visualization:** Matplotlib, Seaborn
-      - **Survival Analysis:** Lifelines
-      - **Machine Learning:** Scikit-learn
-  - **IDE:** Jupyter Lab / Jupyter Notebook
+  - **EGR1**: The high-expression group (top 20%) showed a **significantly higher survival probability** compared to the low-expression group (bottom 20%) (p-value = 0.01).
+
+    <img width="584" height="455" alt="EGR1" src="https://github.com/user-attachments/assets/4c778ef1-ed9e-4b03-ab58-a062788d21b3" />
+
+    
+  - **MAFB**: The low-expression group (low 20%) showed a **significantly higher survival probability** compared to the high-expression group (high 20%) (p-value = 0.01).
+
+    <img width="567" height="455" alt="MAFB" src="https://github.com/user-attachments/assets/5ec2a134-9362-4d19-9fb4-08ef04da9599" />
+
+
+### Machine Learning Model Performance
+
+  - The **Random Forest model achieved the highest predictive accuracy at 67.6%** when trained on the set of significant genes.
+  - The performance of the Random Forest model slightly improved after feature selection, suggesting that dimensionality reduction can contribute to better model performance.
+
+    | Model | Feature Set | Accuracy |
+    | :--- | :--- | :--- |
+    | Logistic Regression | All Genes (20,319) | 56.0% |
+    | Random Forest | All Genes (20,319) | 65.0% |
+    | Logistic Regression | Significant Genes (2,825) | 47.0% |
+    | **Random Forest** | **Significant Genes (2,825)** | **67.6%** |
+
