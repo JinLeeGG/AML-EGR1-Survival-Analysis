@@ -16,7 +16,7 @@ In a cohort of patients with Acute Myeloid Leukemia (AML), differences in EGR1 g
 
 ## Dataset
 
-  - **Data Source**: [The Cancer Genome Atlas (TCGA-LAML, PanCancer Atlas)](https://gdc.cancer.gov/about-data/publications/laml_2012)
+  - **Data Source**: [AML database of the Human Cancer Genome Atlas (TCGA - LAML)](https://gdc.cancer.gov/about-data/publications/laml_2012)
   - **Sample Size**: 200 patients with Acute Myeloid Leukemia (AML)
   - **Data Types**:
       - Patient Clinical Data
